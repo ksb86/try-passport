@@ -4,19 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-if (process.env.NODE_ENV === 'dev') {
-    // mongoose
-    var devConfig = require('./dev-config.json');
-    mongoose.connect(devConfig.MONGO_URI_DEV);
-}
-if (process.env.NODE_ENV === 'prod') {
-    // mongoose
-    mongoose.connect(process.env.MONGO_URI_PROD);
-}
+// Mongo DB Connection
+require('./db').init();
 
 var routes = require('./routes/index');
 
