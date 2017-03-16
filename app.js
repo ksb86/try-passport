@@ -7,9 +7,17 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+
 if (process.env.NODE_ENV === 'dev') {
+    // mongoose
     var devConfig = require('./dev-config.json');
+    mongoose.connect(devConfig.MONGO_URI_DEV);
 }
+if (process.env.NODE_ENV === 'prod') {
+    // mongoose
+    mongoose.connect(process.env.MONGO_URI_PROD);
+}
+
 var routes = require('./routes/index');
 
 var app = express();
@@ -41,12 +49,6 @@ passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
-// mongoose
-if (process.env.NODE_ENV === 'dev') {
-    mongoose.connect(devConfig.MONGOLAB_URI);
-} else {
-    mongoose.connect(process.env.MONGOLAB_URI);
-}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
